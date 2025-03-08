@@ -16,9 +16,10 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
             shade = 
             round((image[i][j].rgbtRed + image[i][j].rgbtGreen + image[i][j].rgbtBlue) / 3.0);
 
-            image[i][j].rgbtRed = shade;
-            image[i][j].rgbtGreen = shade;
-            image[i][j].rgbtBlue = shade;
+            // To convert an rgb pixel into graysacale; all rgb must have equal values.
+            RGBTRIPLE grey = {shade, shade, shade};
+
+            image[i][j] = grey;
         }
     }
 
