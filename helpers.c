@@ -97,5 +97,104 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 // Detect edges
 void edges(int height, int width, RGBTRIPLE image[height][width])
 {
+    // Gx kernel for horizontal edges
+    int Gx[3][3] = {
+        {-1, 0, 1},
+        {-2, 0, 2},
+        {-1, 0, 1}
+    };
+
+    // Gy kernel for vertical edges
+    int Gy[3][3] = {
+        {-1, -2, -1},
+        {0, 0, 0},
+        {1, 2, 1}
+    };
+
+    // Creating copy of original image with with black border outside whole image
+    RGBTRIPLE cp[height+2][width+2];
+
+    RGBTRIPLE outsideBorder = {0,0,0};
+
+    // Setting black border on rows
+    for (int i = 0; i < width + 2; i++)
+    {
+        // Setting black color to first row
+        cp[0][i] = outsideBorder;
+
+        // Setting black color to last row
+        cp[height+1][i] = outsideBorder;
+    }
+
+    // Setting black border on columns
+    for (int i = 0; i < height + 2; i++)
+    {
+        // Setting black border to first column of whole image
+        cp[i][0] = outsideBorder;
+
+        // Setting black border to last column of whole image
+        cp[i][width+1] = outsideBorder;
+    }
+
+    // Copying the original image into cp
+    for (int i = 1; i < height + 1; i++)
+    {
+        for (int j = 1; j < width + 1; j++)
+        {
+            cp[i][j] = image[i-1][j-1];
+        }
+    }
+
+    // Applying Sobel operator
+    for (int i = 1; i < height + 1; i++)
+    {
+        for (int j = 1; j < width + 1; j++)
+        {
+            // Calculating Gx of each color in current pixel
+            int bluex = (
+                    cp[i-1][j-1].rgbtBlue * Gx[0][0] + cp[i-1][j].rgbtBlue * Gx[0][1] + cp[i-1][j+1].rgbtBlue * Gx[0][2] +
+                    cp[i][j-1].rgbtBlue * Gx[1][0] + cp[i][j].rgbtBlue * Gx[1][1] + cp[i][j+1].rgbtBlue * Gx[1][2] +
+                    cp[i+1][j-1].rgbtBlue * Gx[2][0] + cp[i+1][j].rgbtBlue * Gx[2][1] + cp[i+1][j+1].rgbtBlue * Gx[2][2] );
+            int greenx = (
+                    cp[i-1][j-1].rgbtGreen * Gx[0][0] + cp[i-1][j].rgbtGreen * Gx[0][1] + cp[i-1][j+1].rgbtGreen * Gx[0][2] +
+                    cp[i][j-1].rgbtGreen * Gx[1][0] + cp[i][j].rgbtGreen * Gx[1][1] + cp[i][j+1].rgbtGreen * Gx[1][2] +
+                    cp[i+1][j-1].rgbtGreen * Gx[2][0] + cp[i+1][j].rgbtGreen * Gx[2][1] + cp[i+1][j+1].rgbtGreen * Gx[2][2] );
+            int redx = (
+                    cp[i-1][j-1].rgbtRed * Gx[0][0] + cp[i-1][j].rgbtRed * Gx[0][1] + cp[i-1][j+1].rgbtRed * Gx[0][2] +
+                    cp[i][j-1].rgbtRed * Gx[1][0] + cp[i][j].rgbtRed * Gx[1][1] + cp[i][j+1].rgbtRed * Gx[1][2] +
+                    cp[i+1][j-1].rgbtRed * Gx[2][0] + cp[i+1][j].rgbtRed * Gx[2][1] + cp[i+1][j+1].rgbtRed * Gx[2][2] );
+
+            // Calculating Gy of each color in current pixel
+            int bluey = (
+                    cp[i-1][j-1].rgbtBlue * Gy[0][0] + cp[i-1][j].rgbtBlue * Gy[0][1] + cp[i-1][j+1].rgbtBlue * Gy[0][2] +
+                    cp[i][j-1].rgbtBlue * Gy[1][0] + cp[i][j].rgbtBlue * Gy[1][1] + cp[i][j+1].rgbtBlue * Gy[1][2] +
+                    cp[i+1][j-1].rgbtBlue * Gy[2][0] + cp[i+1][j].rgbtBlue * Gy[2][1] + cp[i+1][j+1].rgbtBlue * Gy[2][2] );
+            int greeny = (
+                    cp[i-1][j-1].rgbtGreen * Gy[0][0] + cp[i-1][j].rgbtGreen * Gy[0][1] + cp[i-1][j+1].rgbtGreen * Gy[0][2] +
+                    cp[i][j-1].rgbtGreen * Gy[1][0] + cp[i][j].rgbtGreen * Gy[1][1] + cp[i][j+1].rgbtGreen * Gy[1][2] +
+                    cp[i+1][j-1].rgbtGreen * Gy[2][0] + cp[i+1][j].rgbtGreen * Gy[2][1] + cp[i+1][j+1].rgbtGreen * Gy[2][2] );
+            int redy = (
+                    cp[i-1][j-1].rgbtRed * Gy[0][0] + cp[i-1][j].rgbtRed * Gy[0][1] + cp[i-1][j+1].rgbtRed * Gy[0][2] +
+                    cp[i][j-1].rgbtRed * Gy[1][0] + cp[i][j].rgbtRed * Gy[1][1] + cp[i][j+1].rgbtRed * Gy[1][2] +
+                    cp[i+1][j-1].rgbtRed * Gy[2][0] + cp[i+1][j].rgbtRed * Gy[2][1] + cp[i+1][j+1].rgbtRed * Gy[2][2] );
+
+            
+            int red, green, blue;
+            // Combining both Gx and Gy as round(sqrt(Gx^2 + Gy^2)) of each color in current pixel
+            blue = round(sqrt(bluex * bluex + bluey * bluey));
+            green = round(sqrt(greenx * greenx + greeny * greeny));
+            red = round(sqrt(redx * redx + redy * redy));
+
+            // Capping color values at 255 if they are greater than 255
+            blue = blue > 255? 255: blue;
+            green = green > 255? 255: green;
+            red = red > 255? 255: red;
+
+            image[i-1][j-1].rgbtBlue = blue;
+            image[i-1][j-1].rgbtGreen = green;
+            image[i-1][j-1].rgbtRed = red;
+        }
+    }
+
     return;
 }
