@@ -5,7 +5,7 @@
 This project is an image filter application written in C. It processes BMP images and applies various filters to them. The primary objective of this project is to parallelize the filters in `helpers.c` using OpenMP to reduce the execution time.
 
 ## Objective
-he main objective of this project is to parallelize the image processing filters using OpenMP to reduce the execution time. The filters are implemented in helpers.c and are parallelized using OpenMP directives.
+The main objective of this project is to parallelize the image processing filters using OpenMP to reduce the execution time. The filters are implemented in helpers.c and are parallelized using OpenMP directives.
 
 ## Working
 
@@ -35,14 +35,14 @@ To run the project, type:
 ```
 - ```flag```: Specifies the filter to apply (e for edges, g for grayscale, r for reflect, s for sepia).
 - ```infile```: The input BMP file.
--```outfile```: The output BMP file.
+- ```outfile```: The output BMP file.
 
 ## Performance Comparison
 The performance comparison between the parallelized and sequential versions of the filters is given below:
 
 | **Filters** 	| **Sequential Execution** 	| **Parallel Execution** 	|
 |-------------	|--------------------------	|------------------------	|
-| Grayscale   	| 0.0061584 seconds        	| 0.0011523 seconds      	|
-| Sepia       	| 0.015165 seconds         	| 0.001125 seconds       	|
-| Reflect     	| 0.0016543 seconds        	| 0.0002468 seconds      	|
-| Edges       	| 0.0445879 seconds        	| 0.0125864 seconds      	|
+| Grayscale   	| 6.1584 ms        	        | 1.1523 ms               	|
+| Sepia       	| 2.165 ms               	| 1.1254 ms      	        |
+| Reflect     	| 1.6543 ms       	        | 0.92468 ms          	    |
+| Edges       	| 44.5879 ms            	| 30.5864 ms      	        |
