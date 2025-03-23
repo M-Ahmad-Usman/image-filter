@@ -10,7 +10,7 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
 
     BYTE shade;
 
-    #pragma omp parallel for collapse(2) schedule(static) private(shade)
+    #pragma omp parallel for collapse(2) schedule(dynamic, 200) private(shade)
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -30,7 +30,7 @@ void sepia(int height, int width, RGBTRIPLE image[height][width])
 {
     double start_time = omp_get_wtime();
 
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for collapse(2) schedule(dynamic, 200)
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -62,7 +62,7 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
     double start_time = omp_get_wtime();
 
-    #pragma omp parallel for
+    #pragma omp parallel for schedule(dynamic, 200)
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width / 2; j++)
@@ -99,21 +99,21 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
     RGBTRIPLE cp[height + 2][width + 2];
     RGBTRIPLE outsideBorder = {0, 0, 0};
 
-    #pragma omp parallel for
+    #pragma omp parallel for schedule(dynamic, 200)
     for (int i = 0; i < width + 2; i++)
     {
         cp[0][i] = outsideBorder;
         cp[height + 1][i] = outsideBorder;
     }
 
-    #pragma omp parallel for
+    #pragma omp parallel for schedule(dynamic, 200)
     for (int i = 0; i < height + 2; i++)
     {
         cp[i][0] = outsideBorder;
         cp[i][width + 1] = outsideBorder;
     }
 
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for collapse(2) schedule(dynamic, 200)
     for (int i = 1; i < height + 1; i++)
     {
         for (int j = 1; j < width + 1; j++)
@@ -122,7 +122,7 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
         }
     }
 
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for collapse(2) schedule(dynamic, 200)
     for (int i = 1; i < height + 1; i++)
     {
         for (int j = 1; j < width + 1; j++)
